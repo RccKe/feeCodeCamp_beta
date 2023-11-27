@@ -4,29 +4,64 @@ import axios from 'axios';
 
 const Random = () => {
 
-  const [quote, setQuote] = useState([]);
+  // 生成随机颜色的函数
+  const allColor = () => {
+    const r = Math.floor(Math.random() * 101);
+    const g = Math.floor(Math.random() * 101);
+    const b = Math.floor(Math.random() * 101);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  const [quote, setQuote] = useState({});
   const [randomColor, setRandomColor] = useState({
-    backgroundColor: allColor(),
-});
+    backgroundColor: allColor(), color: allColor()
+  });
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
     axios.get('/dataJson/data.json')
       .then(response => {
         const newData = response.data;
-        const randomQu= newData[Math.floor(Math.random() * newData.length)]
-        setQuote(randomQu)
+        const randomQu = newData[Math.floor(Math.random() * newData.length)];
+        setQuote(randomQu);
+
+        // 在获取新的引用后，更新颜色
+        setRandomColor({
+          backgroundColor: allColor(),
+        });
       })
       .catch(error => {
         console.log("获取错误", error);
       })
-  }, [])
+  };
+
+  const detchButton = () => {
+    fetchData()
+  }
 
   return (
-    <div id='quote-box'>
-      <div id='text'>{quote.quote}</div>
-      <div id='author'>{quote.source}</div>
-      <button id='id="new-quote'></button>
-      <a href="" id='tweet-quote'></a>
+    <div id='quote-box' style={{ backgroundColor: randomColor.backgroundColor }}>
+      <div className='quote-box1'>
+        <div id='text' style={{ color: randomColor.backgroundColor }}>{quote.quote}</div>
+        <div id='author' style={{ color: randomColor.backgroundColor }}>- {quote.source}</div>
+        <button id='new-quote' onClick={detchButton} style={{ backgroundColor: randomColor.backgroundColor }}>New quote</button>
+        <a href="https://www.twitter.com/intent/tweet" id="tweet-quote" target="_blank">
+          <svg style={{ backgroundColor: randomColor.backgroundColor }} xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+            <path d="M 5.9199219 6 L 20.582031 27.375 L 6.2304688 44 L 9.4101562 44 L 21.986328 29.421875 L 31.986328 44 L 44 44 L 28.681641 21.669922 L 42.199219 6 L 39.029297 6 L 27.275391 19.617188 L 17.933594 6 L 5.9199219 6 z M 9.7167969 8 L 16.880859 8 L 40.203125 42 L 33.039062 42 L 9.7167969 8 z"></path>
+          </svg>
+        </a>
+
+        <a href="https://www.tumblr.com/" id="tumblr-link" target="_blank">
+          <svg style={{ backgroundColor: randomColor.backgroundColor }} xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+            <path d="M17.594,23.641h-2.681c-0.692,0-1.253-0.561-1.253-1.253v-4.613c0-0.758,0.475-1.428,1.189-1.681	c1.738-0.614,4.822-2.439,5.33-7.712C20.255,7.605,20.892,7,21.674,7h4.993c0.681,0,1.234,0.552,1.234,1.234v7.267h5.053	c0.692,0,1.253,0.561,1.253,1.253v5.635c0,0.692-0.561,1.253-1.253,1.253h-5.053v8.142c0,1.85,0.893,2.559,1.745,2.559	c0.67,0,1.828-0.306,2.685-0.538c0.712-0.193,1.196,0.026,1.444,0.747s1.598,4.557,1.598,4.557c0.246,0.703-0.006,1.477-0.615,1.906	c-1.152,0.812-3.319,1.924-6.547,1.924c-5.014,0-10.617-2.228-10.617-10.542C17.594,30.745,17.594,23.641,17.594,23.641z"></path>
+          </svg>
+        </a>
+
+
+      </div>
     </div>
   )
 }
